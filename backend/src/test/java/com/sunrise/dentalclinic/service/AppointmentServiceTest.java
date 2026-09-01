@@ -50,7 +50,7 @@ class AppointmentServiceTest {
         return new AppointmentRequest(
                 "Kamal",
                 "123 Main St, Colombo",
-                "0771234567",
+                "0771234566",
                 1L,
                 1L,
                 LocalDate.now().plusDays(1),
@@ -62,7 +62,7 @@ class AppointmentServiceTest {
     void register_withValidRequest_savesAndReturnsAppointment() {
         Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
-        Patient savedPatient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234567");
+        Patient savedPatient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
 
         when(dentistRepository.findById(1L)).thenReturn(Optional.of(dentist));
         when(treatmentTypeRepository.findById(1L)).thenReturn(Optional.of(treatment));
