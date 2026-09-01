@@ -6,6 +6,7 @@ import com.sunrise.dentalclinic.entity.Appointment;
 import com.sunrise.dentalclinic.entity.Dentist;
 import com.sunrise.dentalclinic.entity.Patient;
 import com.sunrise.dentalclinic.entity.TreatmentType;
+import com.sunrise.dentalclinic.exception.AppointmentNotFoundException;
 import com.sunrise.dentalclinic.exception.DentistNotFoundException;
 import com.sunrise.dentalclinic.exception.TreatmentTypeNotFoundException;
 import com.sunrise.dentalclinic.repository.AppointmentRepository;
@@ -97,5 +98,30 @@ class AppointmentServiceTest {
 
         assertThatThrownBy(() -> appointmentService.register(validRequest()))
                 .isInstanceOf(TreatmentTypeNotFoundException.class);
+    }
+
+    //test search Appointment
+    @Test
+    void findByAppointmentNo_withExistingNo_returnsAppointment() {
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
+        TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
+        Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
+        Appointment appointment = new Appointment(1L, "APT-00001", patient, dentist, treatment,
+                LocalDate.now().plusDays(1), LocalTime.of(10, 30), Appointment.AppointmentStatus.SCHEDULED);
+
+        when(appointmentRepository.findByAppointmentNo("APT-00001")).thenReturn(Optional.of(appointment));
+
+        AppointmentResponse response = appointmentService.findByAppointmentNo("APT-00001");
+
+        assertThat(response.getAppointmentNo()).isEqualTo("APT-00001");
+        assertThat(response.getPatientName()).isEqualTo("Kamal");
+    }
+
+    @Test
+    void findByAppointmentNo_withUnknownNo_throwsAppointmentNotFound() {
+        when(appointmentRepository.findByAppointmentNo("APT-99999")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> appointmentService.findByAppointmentNo("APT-99999"))
+                .isInstanceOf(AppointmentNotFoundException.class);
     }
 }
