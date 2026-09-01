@@ -30,5 +30,5 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private String role; // e.g. ADMIN, RECEPTIONIST
+    private String role; // ADMIN, RECEPTIONIST
 }
