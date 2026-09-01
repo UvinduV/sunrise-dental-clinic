@@ -1,4 +1,4 @@
-package com.sunrise.dentalclinic.model.entity;
+package com.sunrise.dentalclinic.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

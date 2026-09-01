@@ -1,4 +1,4 @@
-package com.sunrise.dentalclinic.model.entity;
+package com.sunrise.dentalclinic.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "patients")
+@Table(name = "dentists")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Patient {
+public class Dentist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +27,5 @@ public class Patient {
     private String name;
 
     @Column(nullable = false)
-    private String address;
-
-    @Column(name = "contact_number", nullable = false)
-    private String contactNumber;
+    private String specialization;
 }

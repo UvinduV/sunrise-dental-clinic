@@ -1,4 +1,4 @@
-package com.sunrise.dentalclinic.model.entity;
+package com.sunrise.dentalclinic.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,23 +11,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
 @Entity
-@Table(name = "treatments")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TreatmentType {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(name = "password_hash", nullable = false)
+    private String password;
 
     @Column(nullable = false)
-    private BigDecimal fee;
+    private String role; // e.g. ADMIN, RECEPTIONIST
 }
