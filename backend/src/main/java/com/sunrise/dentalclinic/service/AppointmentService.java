@@ -6,6 +6,7 @@ import com.sunrise.dentalclinic.entity.Appointment;
 import com.sunrise.dentalclinic.entity.Dentist;
 import com.sunrise.dentalclinic.entity.Patient;
 import com.sunrise.dentalclinic.entity.TreatmentType;
+import com.sunrise.dentalclinic.exception.AppointmentNotFoundException;
 import com.sunrise.dentalclinic.exception.DentistNotFoundException;
 import com.sunrise.dentalclinic.exception.TreatmentTypeNotFoundException;
 import com.sunrise.dentalclinic.repository.AppointmentRepository;
@@ -48,6 +49,14 @@ public class AppointmentService {
         appointment.setTime(request.getTime());
         appointment.setStatus(Appointment.AppointmentStatus.SCHEDULED);
         appointment = appointmentRepository.save(appointment);
+
+        return toResponse(appointment);
+    }
+
+    public AppointmentResponse findByAppointmentNo(String appointmentNo) {
+        Appointment appointment = appointmentRepository.findByAppointmentNo(appointmentNo)
+                .orElseThrow(() -> new AppointmentNotFoundException(
+                        "No appointment found with appointment number: " + appointmentNo));
 
         return toResponse(appointment);
     }
