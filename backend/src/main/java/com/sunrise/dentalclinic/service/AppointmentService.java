@@ -15,6 +15,7 @@ import com.sunrise.dentalclinic.repository.PatientRepository;
 import com.sunrise.dentalclinic.repository.TreatmentTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class AppointmentService {
     private final DentistRepository dentistRepository;
     private final TreatmentTypeRepository treatmentTypeRepository;
 
+    @Transactional
     public AppointmentResponse register(AppointmentRequest request) {
         Dentist dentist = dentistRepository.findById(request.getDentistId())
                 .orElseThrow(() -> new DentistNotFoundException(
@@ -34,11 +36,7 @@ public class AppointmentService {
                 .orElseThrow(() -> new TreatmentTypeNotFoundException(
                         "No treatment type found with id: " + request.getTreatmentId()));
 
-        Patient patient = new Patient();
-        patient.setName(request.getPatientName());
-        patient.setAddress(request.getAddress());
-        patient.setContactNumber(request.getContactNumber());
-        patient = patientRepository.save(patient);
+        Patient patient = findOrRegisterPatient(request);
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentNo(generateAppointmentNo());
@@ -59,6 +57,18 @@ public class AppointmentService {
                         "No appointment found with appointment number: " + appointmentNo));
 
         return toResponse(appointment);
+    }
+
+    // search returning patient
+    private Patient findOrRegisterPatient(AppointmentRequest request) {
+        return patientRepository.findByContactNumber(request.getContactNumber())
+                .orElseGet(() -> {
+                    Patient patient = new Patient();
+                    patient.setName(request.getPatientName());
+                    patient.setAddress(request.getAddress());
+                    patient.setContactNumber(request.getContactNumber());
+                    return patientRepository.save(patient);
+                });
     }
 
     private String generateAppointmentNo() {

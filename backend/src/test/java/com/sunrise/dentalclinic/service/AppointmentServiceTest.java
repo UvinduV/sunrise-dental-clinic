@@ -27,6 +27,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -80,6 +82,25 @@ class AppointmentServiceTest {
         assertThat(response.getTreatmentName()).isEqualTo("Root Canal");
         assertThat(response.getFee()).isEqualByComparingTo("5000");
         assertThat(response.getStatus()).isEqualTo("SCHEDULED");
+    }
+
+    @Test
+    void register_withReturningPatient_reusesExistingPatientRecord() {
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
+        TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
+        Patient existingPatient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
+
+        when(dentistRepository.findById(1L)).thenReturn(Optional.of(dentist));
+        when(treatmentTypeRepository.findById(1L)).thenReturn(Optional.of(treatment));
+        when(patientRepository.findByContactNumber("0771234566")).thenReturn(Optional.of(existingPatient));
+        when(appointmentRepository.count()).thenReturn(0L);
+        when(appointmentRepository.save(any(Appointment.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        AppointmentResponse response = appointmentService.register(validRequest());
+
+        assertThat(response.getPatientName()).isEqualTo("Kamal");
+        verify(patientRepository, never()).save(any(Patient.class));
     }
 
     @Test
