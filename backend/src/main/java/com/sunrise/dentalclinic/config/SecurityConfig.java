@@ -36,13 +36,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // JSON REST API tested via Postman, no browser form posts
+                .csrf(csrf -> csrf.disable()) // JSON REST API
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/help/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .httpBasic(basic -> {}); // Basic Auth on subsequent requests, tested via Postman
+                .httpBasic(basic -> {}); // Basic Auth 
 
         return http.build();
     }
