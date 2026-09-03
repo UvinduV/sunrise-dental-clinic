@@ -3,6 +3,7 @@ package com.sunrise.dentalclinic.controller;
 import com.sunrise.dentalclinic.dto.request.AppointmentRequest;
 import com.sunrise.dentalclinic.exception.AppointmentNotFoundException;
 import com.sunrise.dentalclinic.exception.DentistNotFoundException;
+import com.sunrise.dentalclinic.exception.DoubleBookingException;
 import com.sunrise.dentalclinic.exception.TreatmentTypeNotFoundException;
 import com.sunrise.dentalclinic.service.AppointmentService;
 import jakarta.validation.Valid;
@@ -31,6 +32,9 @@ public class AppointmentController {
         } catch (DentistNotFoundException | TreatmentTypeNotFoundException e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (DoubleBookingException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

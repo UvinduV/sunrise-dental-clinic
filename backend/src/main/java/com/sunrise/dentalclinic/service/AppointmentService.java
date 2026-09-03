@@ -8,6 +8,7 @@ import com.sunrise.dentalclinic.entity.Patient;
 import com.sunrise.dentalclinic.entity.TreatmentType;
 import com.sunrise.dentalclinic.exception.AppointmentNotFoundException;
 import com.sunrise.dentalclinic.exception.DentistNotFoundException;
+import com.sunrise.dentalclinic.exception.DoubleBookingException;
 import com.sunrise.dentalclinic.exception.TreatmentTypeNotFoundException;
 import com.sunrise.dentalclinic.repository.AppointmentRepository;
 import com.sunrise.dentalclinic.repository.DentistRepository;
@@ -37,6 +38,14 @@ public class AppointmentService {
         TreatmentType treatment = treatmentTypeRepository.findById(request.getTreatmentId())
                 .orElseThrow(() -> new TreatmentTypeNotFoundException(
                         "No treatment type found with id: " + request.getTreatmentId()));
+
+        boolean alreadyBooked = appointmentRepository.existsByDentistIdAndDateAndTimeAndStatus(
+                dentist.getId(), request.getDate(), request.getTime(), Appointment.AppointmentStatus.SCHEDULED);
+        if (alreadyBooked) {
+            throw new DoubleBookingException(
+                    "Dentist " + dentist.getName() + " already has a scheduled appointment at "
+                            + request.getDate() + " " + request.getTime());
+        }
 
         Patient patient = findOrRegisterPatient(request);
 
