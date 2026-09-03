@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             refreshNavState();
             showSection('appointments-section');
             loginForm.reset();
+            loadAppointmentsSection();
         } catch (err) {
             loginError.textContent = err.message;
             loginError.hidden = false;

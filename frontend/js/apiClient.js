@@ -46,9 +46,11 @@ async function apiRequest(method, path, body) {
     if (!response.ok) {
         const message = (data && data.message) ? data.message
             : (typeof data === 'string' ? data : `Request failed (${response.status})`);
+        console.error(`[API] ${method} ${path} -> ${response.status}:`, message);
         throw new Error(message);
     }
 
+    console.log(`[API] ${method} ${path} -> ${response.status}`, data);
     return data;
 }
 

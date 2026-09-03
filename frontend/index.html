@@ -46,7 +46,7 @@
     <section id="login-section" class="app-section" hidden>
         <div class="row justify-content-center">
             <div class="col-md-5 col-sm-8">
-                //login form
+                <!-- login form -->
                 <div class="app-card" id="loginCard">
                     <h3 class="text-center mb-4">Staff Login</h3>
                     <div id="loginError" class="alert alert-danger" hidden></div>
@@ -65,8 +65,8 @@
                         Don't have an account? <a href="#" id="showSignup">Sign up here</a>
                     </p>
                 </div>
-                
-                //signup form
+
+                <!-- signup form -->
                 <div class="app-card" id="signupCard" hidden>
                     <h3 class="text-center mb-4">Create Staff Account</h3>
                     <div id="signupError" class="alert alert-danger" hidden></div>
@@ -103,6 +103,90 @@
     </section>
 
     <section id="appointments-section" class="app-section" hidden>
+        <h2 class="mb-4">Appointments</h2>
+
+        <div class="app-card mb-4">
+            <h5 class="mb-3">Register New Appointment</h5>
+            <div id="registerError" class="alert alert-danger" hidden></div>
+            <div id="registerSuccess" class="alert alert-success" hidden></div>
+            <form id="registerForm" class="row g-3">
+                <div class="col-md-6">
+                    <label for="apPatientName" class="form-label">Patient Name</label>
+                    <input type="text" class="form-control" id="apPatientName" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="apContactNumber" class="form-label">Contact Number</label>
+                    <input type="text" class="form-control" id="apContactNumber" placeholder="0771234567" required>
+                </div>
+                <div class="col-12">
+                    <label for="apAddress" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="apAddress" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="apDentist" class="form-label">Dentist</label>
+                    <select class="form-select" id="apDentist" required>
+                        <option value="" disabled selected>Loading dentists…</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="apTreatment" class="form-label">Treatment</label>
+                    <select class="form-select" id="apTreatment" required>
+                        <option value="" disabled selected>Loading treatments…</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="apDate" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="apDate" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="apTime" class="form-label">Time</label>
+                    <input type="time" class="form-control" id="apTime" required>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Register Appointment</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="app-card mb-4">
+            <h5 class="mb-3">Search Appointment</h5>
+            <form id="searchForm" class="row g-2 align-items-end mb-3">
+                <div class="col-md-6">
+                    <label for="searchApptNo" class="form-label">Appointment Number</label>
+                    <input type="text" class="form-control" id="searchApptNo" placeholder="APT-00001" required>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-outline-primary">Search</button>
+                </div>
+            </form>
+            <div id="searchError" class="alert alert-danger" hidden></div>
+            <div id="searchResult" hidden></div>
+        </div>
+
+        <div class="app-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">All Appointments</h5>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="refreshAppointmentsBtn">Refresh</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Patient</th>
+                        <th>Dentist</th>
+                        <th>Treatment</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody id="appointmentsTableBody">
+                    <tr><td colspan="7" class="text-center text-muted">Loading…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </section>
 
     <section id="bills-section" class="app-section" hidden>
@@ -123,5 +207,6 @@
 <script src="js/apiClient.js"></script>
 <script src="js/app.js"></script>
 <script src="js/authController.js"></script>
+<script src="js/appointmentController.js"></script>
 </body>
 </html>
