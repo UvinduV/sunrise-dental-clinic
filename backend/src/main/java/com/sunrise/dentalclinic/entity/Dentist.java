@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "dentists")
 @Getter
@@ -28,4 +30,7 @@ public class Dentist {
 
     @Column(nullable = false)
     private String specialization;
+
+    @Column(name = "consultation_fee")
+    private BigDecimal consultationFee;
 }

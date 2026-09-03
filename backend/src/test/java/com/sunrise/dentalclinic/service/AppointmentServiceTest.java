@@ -65,7 +65,7 @@ class AppointmentServiceTest {
 
     @Test
     void register_validRequest_saved() {
-        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist", new BigDecimal("500.00"));
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
         Patient savedPatient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
 
@@ -88,7 +88,7 @@ class AppointmentServiceTest {
 
     @Test
     void register_returningPatient_reusesPatient() {
-        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist", new BigDecimal("500.00"));
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
         Patient existingPatient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
 
@@ -107,7 +107,7 @@ class AppointmentServiceTest {
 
     @Test
     void register_doubleBooking_rejected() {
-        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist", new BigDecimal("500.00"));
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
         AppointmentRequest request = validRequest();
 
@@ -134,7 +134,7 @@ class AppointmentServiceTest {
 
     @Test
     void register_unknownTreatment_rejected() {
-        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist", new BigDecimal("500.00"));
         when(dentistRepository.findById(1L)).thenReturn(Optional.of(dentist));
         when(treatmentTypeRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -145,7 +145,7 @@ class AppointmentServiceTest {
     //test search Appointment
     @Test
     void findByNo_existingNo_found() {
-        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist", new BigDecimal("500.00"));
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
         Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
         Appointment appointment = new Appointment(1L, "APT-00001", patient, dentist, treatment,
@@ -170,7 +170,7 @@ class AppointmentServiceTest {
     //test list all appointments
     @Test
     void findAll_hasAppointments_returnsList() {
-        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist", new BigDecimal("500.00"));
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
         Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
         Appointment appointment = new Appointment(1L, "APT-00001", patient, dentist, treatment,

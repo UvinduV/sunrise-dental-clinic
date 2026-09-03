@@ -46,7 +46,7 @@ class BillServiceTest {
     private BillService billService;
 
     private Appointment sampleAppointment() {
-        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist", new BigDecimal("500.00"));
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000.00"));
         Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
         return new Appointment(1L, "APT-00001", patient, dentist, treatment,
@@ -60,7 +60,7 @@ class BillServiceTest {
         Bill bill = new Bill(1L, appointment, total, LocalDate.now());
 
         when(appointmentRepository.findByAppointmentNo("APT-00001")).thenReturn(Optional.of(appointment));
-        when(feeCalculationStrategy.calculateFee(appointment.getTreatment())).thenReturn(total);
+        when(feeCalculationStrategy.calculateFee(appointment.getTreatment(), appointment.getDentist())).thenReturn(total);
         when(billFactory.createBill(appointment, total)).thenReturn(bill);
         when(billRepository.save(bill)).thenReturn(bill);
 

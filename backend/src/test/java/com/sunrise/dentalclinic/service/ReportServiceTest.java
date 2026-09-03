@@ -42,9 +42,9 @@ class ReportServiceTest {
     }
 
     @Test
-    void getDailyAppointmentsReport_withAppointments_returnsCorrectCount() {
+    void dailyReport_hasAppointments_correctCount() {
         LocalDate date = LocalDate.of(2026, 9, 10);
-        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist", new BigDecimal("500.00"));
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
         Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
         Appointment appointment = new Appointment(1L, "APT-00001", patient, dentist, treatment,
@@ -60,7 +60,7 @@ class ReportServiceTest {
     }
 
     @Test
-    void getDailyAppointmentsReport_withNoAppointments_returnsZeroCount() {
+    void dailyReport_empty_zeroCount() {
         LocalDate date = LocalDate.of(2026, 9, 11);
         when(appointmentRepository.findByDate(date)).thenReturn(Collections.emptyList());
 
@@ -71,11 +71,11 @@ class ReportServiceTest {
     }
 
     @Test
-    void getRevenueReport_sumsAllBillTotals() {
+    void revenueReport_sumsBillTotals() {
         LocalDate from = LocalDate.of(2026, 9, 1);
         LocalDate to = LocalDate.of(2026, 9, 30);
 
-        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist", new BigDecimal("500.00"));
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
         Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
         Appointment appointment = new Appointment(1L, "APT-00001", patient, dentist, treatment,

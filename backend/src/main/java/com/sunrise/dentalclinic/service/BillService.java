@@ -24,15 +24,13 @@ public class BillService {
     private final BillFactory billFactory;
     private final FeeCalculationStrategy feeCalculationStrategy;
 
-    // Only one write today, but kept transactional in case bill generation grows to touch
-    // more than one table (e.g. marking the appointment as billed) in the future.
     @Transactional
     public BillResponse generateBill(String appointmentNo) {
         Appointment appointment = appointmentRepository.findByAppointmentNo(appointmentNo)
                 .orElseThrow(() -> new AppointmentNotFoundException(
                         "No appointment found with appointment number: " + appointmentNo));
 
-        BigDecimal totalAmount = feeCalculationStrategy.calculateFee(appointment.getTreatment());
+        BigDecimal totalAmount = feeCalculationStrategy.calculateFee(appointment.getTreatment(), appointment.getDentist());
 
         Bill bill = billFactory.createBill(appointment, totalAmount);
         bill = billRepository.save(bill);
