@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 //only treatment types need for selecting appointments and billing
+@RestController
 @RequestMapping("/api/treatments")
 @RequiredArgsConstructor
 public class TreatmentTypeController {
