@@ -13,7 +13,7 @@ class AuthServiceTest {
     private final AuthService authService = new AuthService();
 
     @Test
-    void login_withValidCredentials_returnsLoginResponse() {
+    void login_validCredentials_success() {
         LoginResponse response = authService.login(new LoginRequest("admin", "1234"));
 
         assertThat(response.getUsername()).isEqualTo("admin");
@@ -22,13 +22,13 @@ class AuthServiceTest {
     }
 
     @Test
-    void login_withWrongPassword_throwsInvalidCredentials() {
+    void login_wrongPassword_rejected() {
         assertThatThrownBy(() -> authService.login(new LoginRequest("admin", "wrongpass")))
                 .isInstanceOf(InvalidCredentialsException.class);
     }
 
     @Test
-    void login_withUnknownUsername_throwsInvalidCredentials() {
+    void login_unknownUsername_rejected() {
         assertThatThrownBy(() -> authService.login(new LoginRequest("admin1", "1234")))
                 .isInstanceOf(InvalidCredentialsException.class);
     }

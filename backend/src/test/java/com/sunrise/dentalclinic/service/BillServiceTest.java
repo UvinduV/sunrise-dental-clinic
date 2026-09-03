@@ -54,7 +54,7 @@ class BillServiceTest {
     }
 
     @Test
-    void generateBill_withExistingAppointment_savesAndReturnsBill() {
+    void generateBill_existingAppointment_saved() {
         Appointment appointment = sampleAppointment();
         BigDecimal total = new BigDecimal("5500.00");
         Bill bill = new Bill(1L, appointment, total, LocalDate.now());
@@ -74,7 +74,7 @@ class BillServiceTest {
     }
 
     @Test
-    void generateBill_withUnknownAppointment_throwsAppointmentNotFound() {
+    void generateBill_unknownAppointment_rejected() {
         when(appointmentRepository.findByAppointmentNo("APT-99999")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> billService.generateBill("APT-99999"))
@@ -82,7 +82,7 @@ class BillServiceTest {
     }
 
     @Test
-    void findById_withExistingBill_returnsBill() {
+    void findById_existingBill_found() {
         Appointment appointment = sampleAppointment();
         Bill bill = new Bill(1L, appointment, new BigDecimal("5500.00"), LocalDate.now());
 
@@ -95,7 +95,7 @@ class BillServiceTest {
     }
 
     @Test
-    void findById_withUnknownBill_throwsBillNotFound() {
+    void findById_unknownBill_rejected() {
         when(billRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> billService.findById(99L))
