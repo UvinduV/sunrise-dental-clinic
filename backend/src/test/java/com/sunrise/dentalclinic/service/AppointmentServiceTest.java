@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -144,5 +145,31 @@ class AppointmentServiceTest {
 
         assertThatThrownBy(() -> appointmentService.findByAppointmentNo("APT-99999"))
                 .isInstanceOf(AppointmentNotFoundException.class);
+    }
+
+    //test list all appointments
+    @Test
+    void findAll_withAppointments_returnsMappedList() {
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
+        TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
+        Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
+        Appointment appointment = new Appointment(1L, "APT-00001", patient, dentist, treatment,
+                LocalDate.now().plusDays(1), LocalTime.of(10, 30), Appointment.AppointmentStatus.SCHEDULED);
+
+        when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
+
+        List<AppointmentResponse> responses = appointmentService.findAll();
+
+        assertThat(responses).hasSize(1);
+        assertThat(responses.get(0).getAppointmentNo()).isEqualTo("APT-00001");
+    }
+
+    @Test
+    void findAll_withNoAppointments_returnsEmptyList() {
+        when(appointmentRepository.findAll()).thenReturn(List.of());
+
+        List<AppointmentResponse> responses = appointmentService.findAll();
+
+        assertThat(responses).isEmpty();
     }
 }
