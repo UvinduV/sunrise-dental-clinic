@@ -8,6 +8,7 @@ import com.sunrise.dentalclinic.entity.Patient;
 import com.sunrise.dentalclinic.entity.TreatmentType;
 import com.sunrise.dentalclinic.exception.AppointmentNotFoundException;
 import com.sunrise.dentalclinic.exception.DentistNotFoundException;
+import com.sunrise.dentalclinic.exception.DoubleBookingException;
 import com.sunrise.dentalclinic.exception.TreatmentTypeNotFoundException;
 import com.sunrise.dentalclinic.repository.AppointmentRepository;
 import com.sunrise.dentalclinic.repository.DentistRepository;
@@ -63,7 +64,7 @@ class AppointmentServiceTest {
     }
 
     @Test
-    void register_withValidRequest_savesAndReturnsAppointment() {
+    void register_validRequest_saved() {
         Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
         Patient savedPatient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
@@ -86,7 +87,7 @@ class AppointmentServiceTest {
     }
 
     @Test
-    void register_withReturningPatient_reusesExistingPatientRecord() {
+    void register_returningPatient_reusesPatient() {
         Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
         Patient existingPatient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
@@ -105,7 +106,26 @@ class AppointmentServiceTest {
     }
 
     @Test
-    void register_withUnknownDentist_throwsDentistNotFound() {
+    void register_doubleBooking_rejected() {
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
+        TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
+        AppointmentRequest request = validRequest();
+
+        when(dentistRepository.findById(1L)).thenReturn(Optional.of(dentist));
+        when(treatmentTypeRepository.findById(1L)).thenReturn(Optional.of(treatment));
+        when(appointmentRepository.existsByDentistIdAndDateAndTimeAndStatus(
+                1L, request.getDate(), request.getTime(), Appointment.AppointmentStatus.SCHEDULED))
+                .thenReturn(true);
+
+        assertThatThrownBy(() -> appointmentService.register(request))
+                .isInstanceOf(DoubleBookingException.class);
+
+        verify(patientRepository, never()).save(any(Patient.class));
+        verify(appointmentRepository, never()).save(any(Appointment.class));
+    }
+
+    @Test
+    void register_unknownDentist_rejected() {
         when(dentistRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> appointmentService.register(validRequest()))
@@ -113,7 +133,7 @@ class AppointmentServiceTest {
     }
 
     @Test
-    void register_withUnknownTreatment_throwsTreatmentTypeNotFound() {
+    void register_unknownTreatment_rejected() {
         Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
         when(dentistRepository.findById(1L)).thenReturn(Optional.of(dentist));
         when(treatmentTypeRepository.findById(1L)).thenReturn(Optional.empty());
@@ -124,7 +144,7 @@ class AppointmentServiceTest {
 
     //test search Appointment
     @Test
-    void findByAppointmentNo_withExistingNo_returnsAppointment() {
+    void findByNo_existingNo_found() {
         Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
         Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
@@ -140,7 +160,7 @@ class AppointmentServiceTest {
     }
 
     @Test
-    void findByAppointmentNo_withUnknownNo_throwsAppointmentNotFound() {
+    void findByNo_unknownNo_rejected() {
         when(appointmentRepository.findByAppointmentNo("APT-99999")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> appointmentService.findByAppointmentNo("APT-99999"))
@@ -149,7 +169,7 @@ class AppointmentServiceTest {
 
     //test list all appointments
     @Test
-    void findAll_withAppointments_returnsMappedList() {
+    void findAll_hasAppointments_returnsList() {
         Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist");
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
         Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
@@ -165,7 +185,7 @@ class AppointmentServiceTest {
     }
 
     @Test
-    void findAll_withNoAppointments_returnsEmptyList() {
+    void findAll_empty_returnsEmptyList() {
         when(appointmentRepository.findAll()).thenReturn(List.of());
 
         List<AppointmentResponse> responses = appointmentService.findAll();
