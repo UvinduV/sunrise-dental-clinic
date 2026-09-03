@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AppointmentService {
@@ -57,6 +59,12 @@ public class AppointmentService {
                         "No appointment found with appointment number: " + appointmentNo));
 
         return toResponse(appointment);
+    }
+
+    public List<AppointmentResponse> findAll() {
+        return appointmentRepository.findAll().stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     // search returning patient

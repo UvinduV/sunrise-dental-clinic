@@ -50,4 +50,15 @@ public class AppointmentController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    //List all appointments
+    @GetMapping
+    public ResponseEntity<?> findAll() {
+        try {
+            return ResponseEntity.ok(appointmentService.findAll());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
