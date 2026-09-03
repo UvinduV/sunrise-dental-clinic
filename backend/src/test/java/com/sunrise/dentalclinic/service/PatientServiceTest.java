@@ -1,7 +1,7 @@
 package com.sunrise.dentalclinic.service;
 
-import com.sunrise.dentalclinic.dto.request.PatientRequest;
-import com.sunrise.dentalclinic.dto.response.PatientResponse;
+import com.sunrise.dentalclinic.dto.request.PatientRequestDTO;
+import com.sunrise.dentalclinic.dto.response.PatientResponseDTO;
 import com.sunrise.dentalclinic.entity.Patient;
 import com.sunrise.dentalclinic.exception.PatientNotFoundException;
 import com.sunrise.dentalclinic.repository.PatientRepository;
@@ -29,8 +29,8 @@ class PatientServiceTest {
     @InjectMocks
     private PatientService patientService;
 
-    private PatientRequest validRequest() {
-        return new PatientRequest("Kamal", "123 Main St, Colombo", "0771234566");
+    private PatientRequestDTO validRequest() {
+        return new PatientRequestDTO("Kamal", "123 Main St, Colombo", "0771234566");
     }
 
     @Test
@@ -38,7 +38,7 @@ class PatientServiceTest {
         Patient saved = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
         when(patientRepository.save(any(Patient.class))).thenReturn(saved);
 
-        PatientResponse response = patientService.create(validRequest());
+        PatientResponseDTO response = patientService.create(validRequest());
 
         assertThat(response.getId()).isEqualTo(1L);
         assertThat(response.getName()).isEqualTo("Kamal");
@@ -49,7 +49,7 @@ class PatientServiceTest {
         Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
         when(patientRepository.findById(1L)).thenReturn(Optional.of(patient));
 
-        PatientResponse response = patientService.findById(1L);
+        PatientResponseDTO response = patientService.findById(1L);
 
         assertThat(response.getName()).isEqualTo("Kamal");
     }
@@ -67,7 +67,7 @@ class PatientServiceTest {
         Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
         when(patientRepository.findAll()).thenReturn(List.of(patient));
 
-        List<PatientResponse> responses = patientService.findAll();
+        List<PatientResponseDTO> responses = patientService.findAll();
 
         assertThat(responses).hasSize(1);
         assertThat(responses.get(0).getName()).isEqualTo("Kamal");
@@ -79,8 +79,8 @@ class PatientServiceTest {
         when(patientRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(patientRepository.save(any(Patient.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        PatientResponse response = patientService.update(1L,
-                new PatientRequest("Kamal Updated", "New Address", "0771234567"));
+        PatientResponseDTO response = patientService.update(1L,
+                new PatientRequestDTO("Kamal Updated", "New Address", "0771234567"));
 
         assertThat(response.getName()).isEqualTo("Kamal Updated");
         assertThat(response.getAddress()).isEqualTo("New Address");

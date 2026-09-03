@@ -1,7 +1,7 @@
 package com.sunrise.dentalclinic.service;
 
-import com.sunrise.dentalclinic.dto.request.AppointmentRequest;
-import com.sunrise.dentalclinic.dto.response.AppointmentResponse;
+import com.sunrise.dentalclinic.dto.request.AppointmentRequestDTO;
+import com.sunrise.dentalclinic.dto.response.AppointmentResponseDTO;
 import com.sunrise.dentalclinic.entity.Appointment;
 import com.sunrise.dentalclinic.entity.Dentist;
 import com.sunrise.dentalclinic.entity.Patient;
@@ -51,8 +51,8 @@ class AppointmentServiceTest {
     @InjectMocks
     private AppointmentService appointmentService;
 
-    private AppointmentRequest validRequest() {
-        return new AppointmentRequest(
+    private AppointmentRequestDTO validRequest() {
+        return new AppointmentRequestDTO(
                 "Kamal",
                 "123 Main St, Colombo",
                 "0771234566",
@@ -76,7 +76,7 @@ class AppointmentServiceTest {
         when(appointmentRepository.save(any(Appointment.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        AppointmentResponse response = appointmentService.register(validRequest());
+        AppointmentResponseDTO response = appointmentService.register(validRequest());
 
         assertThat(response.getAppointmentNo()).isEqualTo("APT-00001");
         assertThat(response.getPatientName()).isEqualTo("Kamal");
@@ -99,7 +99,7 @@ class AppointmentServiceTest {
         when(appointmentRepository.save(any(Appointment.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        AppointmentResponse response = appointmentService.register(validRequest());
+        AppointmentResponseDTO response = appointmentService.register(validRequest());
 
         assertThat(response.getPatientName()).isEqualTo("Kamal");
         verify(patientRepository, never()).save(any(Patient.class));
@@ -109,7 +109,7 @@ class AppointmentServiceTest {
     void register_doubleBooking_rejected() {
         Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist", new BigDecimal("500.00"));
         TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
-        AppointmentRequest request = validRequest();
+        AppointmentRequestDTO request = validRequest();
 
         when(dentistRepository.findById(1L)).thenReturn(Optional.of(dentist));
         when(treatmentTypeRepository.findById(1L)).thenReturn(Optional.of(treatment));
@@ -153,7 +153,7 @@ class AppointmentServiceTest {
 
         when(appointmentRepository.findByAppointmentNo("APT-00001")).thenReturn(Optional.of(appointment));
 
-        AppointmentResponse response = appointmentService.findByAppointmentNo("APT-00001");
+        AppointmentResponseDTO response = appointmentService.findByAppointmentNo("APT-00001");
 
         assertThat(response.getAppointmentNo()).isEqualTo("APT-00001");
         assertThat(response.getPatientName()).isEqualTo("Kamal");
@@ -178,7 +178,7 @@ class AppointmentServiceTest {
 
         when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
 
-        List<AppointmentResponse> responses = appointmentService.findAll();
+        List<AppointmentResponseDTO> responses = appointmentService.findAll();
 
         assertThat(responses).hasSize(1);
         assertThat(responses.get(0).getAppointmentNo()).isEqualTo("APT-00001");
@@ -188,7 +188,7 @@ class AppointmentServiceTest {
     void findAll_empty_returnsEmptyList() {
         when(appointmentRepository.findAll()).thenReturn(List.of());
 
-        List<AppointmentResponse> responses = appointmentService.findAll();
+        List<AppointmentResponseDTO> responses = appointmentService.findAll();
 
         assertThat(responses).isEmpty();
     }

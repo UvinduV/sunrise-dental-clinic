@@ -1,7 +1,7 @@
 package com.sunrise.dentalclinic.service;
 
-import com.sunrise.dentalclinic.dto.request.PatientRequest;
-import com.sunrise.dentalclinic.dto.response.PatientResponse;
+import com.sunrise.dentalclinic.dto.request.PatientRequestDTO;
+import com.sunrise.dentalclinic.dto.response.PatientResponseDTO;
 import com.sunrise.dentalclinic.entity.Patient;
 import com.sunrise.dentalclinic.exception.PatientNotFoundException;
 import com.sunrise.dentalclinic.repository.PatientRepository;
@@ -17,7 +17,7 @@ public class PatientService {
 
     private final PatientRepository patientRepository;
 
-    public PatientResponse create(PatientRequest request) {
+    public PatientResponseDTO create(PatientRequestDTO request) {
         Patient patient = new Patient();
         patient.setName(request.getName());
         patient.setAddress(request.getAddress());
@@ -27,21 +27,21 @@ public class PatientService {
         return toResponse(patient);
     }
 
-    public PatientResponse findById(Long id) {
+    public PatientResponseDTO findById(Long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new PatientNotFoundException("No patient found with id: " + id));
 
         return toResponse(patient);
     }
 
-    public List<PatientResponse> findAll() {
+    public List<PatientResponseDTO> findAll() {
         return patientRepository.findAll().stream()
                 .map(this::toResponse)
                 .toList();
     }
 
     @Transactional
-    public PatientResponse update(Long id, PatientRequest request) {
+    public PatientResponseDTO update(Long id, PatientRequestDTO request) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new PatientNotFoundException("No patient found with id: " + id));
 
@@ -60,8 +60,8 @@ public class PatientService {
         patientRepository.deleteById(id);
     }
 
-    private PatientResponse toResponse(Patient patient) {
-        return new PatientResponse(
+    private PatientResponseDTO toResponse(Patient patient) {
+        return new PatientResponseDTO(
                 patient.getId(),
                 patient.getName(),
                 patient.getAddress(),

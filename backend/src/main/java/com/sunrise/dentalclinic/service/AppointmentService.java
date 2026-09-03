@@ -1,7 +1,7 @@
 package com.sunrise.dentalclinic.service;
 
-import com.sunrise.dentalclinic.dto.request.AppointmentRequest;
-import com.sunrise.dentalclinic.dto.response.AppointmentResponse;
+import com.sunrise.dentalclinic.dto.request.AppointmentRequestDTO;
+import com.sunrise.dentalclinic.dto.response.AppointmentResponseDTO;
 import com.sunrise.dentalclinic.entity.Appointment;
 import com.sunrise.dentalclinic.entity.Dentist;
 import com.sunrise.dentalclinic.entity.Patient;
@@ -30,7 +30,7 @@ public class AppointmentService {
     private final TreatmentTypeRepository treatmentTypeRepository;
 
     @Transactional
-    public AppointmentResponse register(AppointmentRequest request) {
+    public AppointmentResponseDTO register(AppointmentRequestDTO request) {
         Dentist dentist = dentistRepository.findById(request.getDentistId())
                 .orElseThrow(() -> new DentistNotFoundException(
                         "No dentist found with id: " + request.getDentistId()));
@@ -62,7 +62,7 @@ public class AppointmentService {
         return toResponse(appointment);
     }
 
-    public AppointmentResponse findByAppointmentNo(String appointmentNo) {
+    public AppointmentResponseDTO findByAppointmentNo(String appointmentNo) {
         Appointment appointment = appointmentRepository.findByAppointmentNo(appointmentNo)
                 .orElseThrow(() -> new AppointmentNotFoundException(
                         "No appointment found with appointment number: " + appointmentNo));
@@ -70,14 +70,14 @@ public class AppointmentService {
         return toResponse(appointment);
     }
 
-    public List<AppointmentResponse> findAll() {
+    public List<AppointmentResponseDTO> findAll() {
         return appointmentRepository.findAll().stream()
                 .map(this::toResponse)
                 .toList();
     }
 
     // search returning patient
-    private Patient findOrRegisterPatient(AppointmentRequest request) {
+    private Patient findOrRegisterPatient(AppointmentRequestDTO request) {
         return patientRepository.findByContactNumber(request.getContactNumber())
                 .orElseGet(() -> {
                     Patient patient = new Patient();
@@ -93,8 +93,8 @@ public class AppointmentService {
         return String.format("APT-%05d", nextSeq);
     }
 
-    private AppointmentResponse toResponse(Appointment appointment) {
-        return new AppointmentResponse(
+    private AppointmentResponseDTO toResponse(Appointment appointment) {
+        return new AppointmentResponseDTO(
                 appointment.getAppointmentNo(),
                 appointment.getPatient().getName(),
                 appointment.getPatient().getAddress(),

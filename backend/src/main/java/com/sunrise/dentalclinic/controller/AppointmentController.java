@@ -1,6 +1,6 @@
 package com.sunrise.dentalclinic.controller;
 
-import com.sunrise.dentalclinic.dto.request.AppointmentRequest;
+import com.sunrise.dentalclinic.dto.request.AppointmentRequestDTO;
 import com.sunrise.dentalclinic.exception.AppointmentNotFoundException;
 import com.sunrise.dentalclinic.exception.DentistNotFoundException;
 import com.sunrise.dentalclinic.exception.DoubleBookingException;
@@ -26,7 +26,7 @@ public class AppointmentController {
 
     //Appointment Registration
     @PostMapping
-    public ResponseEntity<?> register(@Valid @RequestBody AppointmentRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody AppointmentRequestDTO request) {
         try {
             return new ResponseEntity<>(appointmentService.register(request), HttpStatus.CREATED);
         } catch (DentistNotFoundException | TreatmentTypeNotFoundException e) {

@@ -1,6 +1,6 @@
 package com.sunrise.dentalclinic.service;
 
-import com.sunrise.dentalclinic.dto.response.BillResponse;
+import com.sunrise.dentalclinic.dto.response.BillResponseDTO;
 import com.sunrise.dentalclinic.entity.Appointment;
 import com.sunrise.dentalclinic.entity.Bill;
 import com.sunrise.dentalclinic.exception.AppointmentNotFoundException;
@@ -25,7 +25,7 @@ public class BillService {
     private final FeeCalculationStrategy feeCalculationStrategy;
 
     @Transactional
-    public BillResponse generateBill(String appointmentNo) {
+    public BillResponseDTO generateBill(String appointmentNo) {
         Appointment appointment = appointmentRepository.findByAppointmentNo(appointmentNo)
                 .orElseThrow(() -> new AppointmentNotFoundException(
                         "No appointment found with appointment number: " + appointmentNo));
@@ -38,19 +38,19 @@ public class BillService {
         return toResponse(bill);
     }
 
-    public BillResponse findById(Long id) {
+    public BillResponseDTO findById(Long id) {
         Bill bill = billRepository.findById(id)
                 .orElseThrow(() -> new BillNotFoundException("No bill found with id: " + id));
 
         return toResponse(bill);
     }
 
-    private BillResponse toResponse(Bill bill) {
+    private BillResponseDTO toResponse(Bill bill) {
         Appointment appointment = bill.getAppointment();
         BigDecimal treatmentFee = appointment.getTreatment().getFee();
         BigDecimal consultationFee = bill.getTotalAmount().subtract(treatmentFee);
 
-        return new BillResponse(
+        return new BillResponseDTO(
                 bill.getId(),
                 appointment.getAppointmentNo(),
                 appointment.getPatient().getName(),

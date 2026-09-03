@@ -1,6 +1,6 @@
 package com.sunrise.dentalclinic.controller;
 
-import com.sunrise.dentalclinic.dto.request.PatientRequest;
+import com.sunrise.dentalclinic.dto.request.PatientRequestDTO;
 import com.sunrise.dentalclinic.exception.PatientNotFoundException;
 import com.sunrise.dentalclinic.service.PatientService;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ public class PatientController {
     private final PatientService patientService;
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody PatientRequest request) {
+    public ResponseEntity<?> create(@Valid @RequestBody PatientRequestDTO request) {
         try {
             return new ResponseEntity<>(patientService.create(request), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody PatientRequest request) {
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody PatientRequestDTO request) {
         try {
             return ResponseEntity.ok(patientService.update(id, request));
         } catch (PatientNotFoundException e) {

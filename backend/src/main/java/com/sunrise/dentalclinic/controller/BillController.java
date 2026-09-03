@@ -1,6 +1,6 @@
 package com.sunrise.dentalclinic.controller;
 
-import com.sunrise.dentalclinic.dto.request.BillRequest;
+import com.sunrise.dentalclinic.dto.request.BillRequestDTO;
 import com.sunrise.dentalclinic.exception.AppointmentNotFoundException;
 import com.sunrise.dentalclinic.exception.BillNotFoundException;
 import com.sunrise.dentalclinic.service.BillService;
@@ -24,7 +24,7 @@ public class BillController {
 
     // Calculate and generate the bill
     @PostMapping
-    public ResponseEntity<?> generate(@Valid @RequestBody BillRequest request) {
+    public ResponseEntity<?> generate(@Valid @RequestBody BillRequestDTO request) {
         try {
             return new ResponseEntity<>(billService.generateBill(request.getAppointmentNo()), HttpStatus.CREATED);
         } catch (AppointmentNotFoundException e) {

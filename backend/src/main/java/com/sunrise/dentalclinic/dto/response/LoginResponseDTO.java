@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PatientResponse {
-    private Long id;
-    private String name;
-    private String address;
-    private String contactNumber;
+public class LoginResponseDTO {
+    private String username;
+    private String role;
+    private String message;
 }

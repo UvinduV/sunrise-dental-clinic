@@ -1,7 +1,7 @@
 package com.sunrise.dentalclinic.controller;
 
-import com.sunrise.dentalclinic.dto.request.LoginRequest;
-import com.sunrise.dentalclinic.dto.request.RegisterRequest;
+import com.sunrise.dentalclinic.dto.request.LoginRequestDTO;
+import com.sunrise.dentalclinic.dto.request.RegisterRequestDTO;
 import com.sunrise.dentalclinic.exception.InvalidCredentialsException;
 import com.sunrise.dentalclinic.exception.UsernameAlreadyExistsException;
 import com.sunrise.dentalclinic.service.AuthService;
@@ -22,7 +22,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDTO request) {
         try {
             return ResponseEntity.ok(authService.login(request));
         } catch (InvalidCredentialsException e) {
@@ -36,7 +36,7 @@ public class AuthController {
 
     // Creates account 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDTO request) {
         try {
             return new ResponseEntity<>(authService.register(request), HttpStatus.CREATED);
         } catch (UsernameAlreadyExistsException e) {

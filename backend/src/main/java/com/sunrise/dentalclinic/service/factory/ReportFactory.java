@@ -1,8 +1,8 @@
 package com.sunrise.dentalclinic.service.factory;
 
-import com.sunrise.dentalclinic.dto.response.AppointmentResponse;
-import com.sunrise.dentalclinic.dto.response.DailyAppointmentsReportResponse;
-import com.sunrise.dentalclinic.dto.response.RevenueReportResponse;
+import com.sunrise.dentalclinic.dto.response.AppointmentResponseDTO;
+import com.sunrise.dentalclinic.dto.response.DailyAppointmentsReportResponseDTO;
+import com.sunrise.dentalclinic.dto.response.RevenueReportResponseDTO;
 import com.sunrise.dentalclinic.entity.Appointment;
 import com.sunrise.dentalclinic.entity.Bill;
 import org.springframework.stereotype.Component;
@@ -14,24 +14,24 @@ import java.util.List;
 @Component
 public class ReportFactory {
 
-    public DailyAppointmentsReportResponse createDailyAppointmentsReport(LocalDate date, List<Appointment> appointments) {
-        List<AppointmentResponse> appointmentResponses = appointments.stream()
+    public DailyAppointmentsReportResponseDTO createDailyAppointmentsReport(LocalDate date, List<Appointment> appointments) {
+        List<AppointmentResponseDTO> appointmentResponses = appointments.stream()
                 .map(this::toAppointmentResponse)
                 .toList();
 
-        return new DailyAppointmentsReportResponse(date, appointmentResponses.size(), appointmentResponses);
+        return new DailyAppointmentsReportResponseDTO(date, appointmentResponses.size(), appointmentResponses);
     }
 
-    public RevenueReportResponse createRevenueReport(LocalDate from, LocalDate to, List<Bill> bills) {
+    public RevenueReportResponseDTO createRevenueReport(LocalDate from, LocalDate to, List<Bill> bills) {
         BigDecimal totalRevenue = bills.stream()
                 .map(Bill::getTotalAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        return new RevenueReportResponse(from, to, bills.size(), totalRevenue);
+        return new RevenueReportResponseDTO(from, to, bills.size(), totalRevenue);
     }
 
-    private AppointmentResponse toAppointmentResponse(Appointment appointment) {
-        return new AppointmentResponse(
+    private AppointmentResponseDTO toAppointmentResponse(Appointment appointment) {
+        return new AppointmentResponseDTO(
                 appointment.getAppointmentNo(),
                 appointment.getPatient().getName(),
                 appointment.getPatient().getAddress(),

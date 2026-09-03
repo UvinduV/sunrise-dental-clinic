@@ -10,8 +10,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BillRequest {
+public class LoginRequestDTO {
 
-    @NotBlank(message = "Appointment number is required")
-    private String appointmentNo;
+    @NotBlank(message = "Username is required")
+    private String username;
+
+    @NotBlank(message = "Password is required")
+    private String password;
 }

@@ -1,6 +1,6 @@
 package com.sunrise.dentalclinic.service;
 
-import com.sunrise.dentalclinic.dto.response.BillResponse;
+import com.sunrise.dentalclinic.dto.response.BillResponseDTO;
 import com.sunrise.dentalclinic.entity.Appointment;
 import com.sunrise.dentalclinic.entity.Bill;
 import com.sunrise.dentalclinic.entity.Dentist;
@@ -64,7 +64,7 @@ class BillServiceTest {
         when(billFactory.createBill(appointment, total)).thenReturn(bill);
         when(billRepository.save(bill)).thenReturn(bill);
 
-        BillResponse response = billService.generateBill("APT-00001");
+        BillResponseDTO response = billService.generateBill("APT-00001");
 
         assertThat(response.getAppointmentNo()).isEqualTo("APT-00001");
         assertThat(response.getPatientName()).isEqualTo("Kamal");
@@ -88,7 +88,7 @@ class BillServiceTest {
 
         when(billRepository.findById(1L)).thenReturn(Optional.of(bill));
 
-        BillResponse response = billService.findById(1L);
+        BillResponseDTO response = billService.findById(1L);
 
         assertThat(response.getId()).isEqualTo(1L);
         assertThat(response.getTotalAmount()).isEqualByComparingTo("5500.00");

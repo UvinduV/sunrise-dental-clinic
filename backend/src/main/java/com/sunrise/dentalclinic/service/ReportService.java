@@ -1,7 +1,7 @@
 package com.sunrise.dentalclinic.service;
 
-import com.sunrise.dentalclinic.dto.response.DailyAppointmentsReportResponse;
-import com.sunrise.dentalclinic.dto.response.RevenueReportResponse;
+import com.sunrise.dentalclinic.dto.response.DailyAppointmentsReportResponseDTO;
+import com.sunrise.dentalclinic.dto.response.RevenueReportResponseDTO;
 import com.sunrise.dentalclinic.entity.Appointment;
 import com.sunrise.dentalclinic.entity.Bill;
 import com.sunrise.dentalclinic.repository.AppointmentRepository;
@@ -21,12 +21,12 @@ public class ReportService {
     private final BillRepository billRepository;
     private final ReportFactory reportFactory;
 
-    public DailyAppointmentsReportResponse getDailyAppointmentsReport(LocalDate date) {
+    public DailyAppointmentsReportResponseDTO getDailyAppointmentsReport(LocalDate date) {
         List<Appointment> appointments = appointmentRepository.findByDate(date);
         return reportFactory.createDailyAppointmentsReport(date, appointments);
     }
 
-    public RevenueReportResponse getRevenueReport(LocalDate from, LocalDate to) {
+    public RevenueReportResponseDTO getRevenueReport(LocalDate from, LocalDate to) {
         List<Bill> bills = billRepository.findByIssuedDateBetween(from, to);
         return reportFactory.createRevenueReport(from, to, bills);
     }

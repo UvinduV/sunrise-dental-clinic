@@ -1,7 +1,7 @@
 package com.sunrise.dentalclinic.service;
 
-import com.sunrise.dentalclinic.dto.response.DailyAppointmentsReportResponse;
-import com.sunrise.dentalclinic.dto.response.RevenueReportResponse;
+import com.sunrise.dentalclinic.dto.response.DailyAppointmentsReportResponseDTO;
+import com.sunrise.dentalclinic.dto.response.RevenueReportResponseDTO;
 import com.sunrise.dentalclinic.entity.Appointment;
 import com.sunrise.dentalclinic.entity.Bill;
 import com.sunrise.dentalclinic.entity.Dentist;
@@ -52,7 +52,7 @@ class ReportServiceTest {
 
         when(appointmentRepository.findByDate(date)).thenReturn(List.of(appointment));
 
-        DailyAppointmentsReportResponse response = reportService.getDailyAppointmentsReport(date);
+        DailyAppointmentsReportResponseDTO response = reportService.getDailyAppointmentsReport(date);
 
         assertThat(response.getDate()).isEqualTo(date);
         assertThat(response.getTotalAppointments()).isEqualTo(1);
@@ -64,7 +64,7 @@ class ReportServiceTest {
         LocalDate date = LocalDate.of(2026, 9, 11);
         when(appointmentRepository.findByDate(date)).thenReturn(Collections.emptyList());
 
-        DailyAppointmentsReportResponse response = reportService.getDailyAppointmentsReport(date);
+        DailyAppointmentsReportResponseDTO response = reportService.getDailyAppointmentsReport(date);
 
         assertThat(response.getTotalAppointments()).isEqualTo(0);
         assertThat(response.getAppointments()).isEmpty();
@@ -86,7 +86,7 @@ class ReportServiceTest {
 
         when(billRepository.findByIssuedDateBetween(from, to)).thenReturn(List.of(bill1, bill2));
 
-        RevenueReportResponse response = reportService.getRevenueReport(from, to);
+        RevenueReportResponseDTO response = reportService.getRevenueReport(from, to);
 
         assertThat(response.getTotalBills()).isEqualTo(2);
         assertThat(response.getTotalRevenue()).isEqualByComparingTo("8700.00");

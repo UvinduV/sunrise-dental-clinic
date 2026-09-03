@@ -16,7 +16,7 @@ import java.time.LocalTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppointmentRequest {
+public class AppointmentRequestDTO {
 
     @NotBlank(message = "Patient name is required")
     private String patientName;
