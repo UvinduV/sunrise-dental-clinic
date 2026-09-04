@@ -1,6 +1,7 @@
 package com.sunrise.dentalclinic.controller;
 
 import com.sunrise.dentalclinic.dto.request.PatientRequestDTO;
+import com.sunrise.dentalclinic.exception.PatientHasAppointmentsException;
 import com.sunrise.dentalclinic.exception.PatientNotFoundException;
 import com.sunrise.dentalclinic.service.PatientService;
 import jakarta.validation.Valid;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -37,6 +39,20 @@ public class PatientController {
     public ResponseEntity<?> findAll() {
         try {
             return ResponseEntity.ok(patientService.findAll());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Search by contact number
+    @GetMapping("/search")
+    public ResponseEntity<?> findByContactNumber(@RequestParam String contactNumber) {
+        try {
+            return ResponseEntity.ok(patientService.findByContactNumber(contactNumber));
+        } catch (PatientNotFoundException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -74,6 +90,23 @@ public class PatientController {
         try {
             patientService.delete(id);
             return ResponseEntity.noContent().build();
+        } catch (PatientNotFoundException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (PatientHasAppointmentsException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //check patient has appointments before delete
+    @GetMapping("/{id}/has-appointments")
+    public ResponseEntity<?> hasAppointments(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(patientService.hasAppointments(id));
         } catch (PatientNotFoundException e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

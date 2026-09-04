@@ -36,13 +36,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> {}) // CORS rules come from GlobalCorsConfig
                 .csrf(csrf -> csrf.disable()) // JSON REST API
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/help/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/help/**", "/api/health/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .httpBasic(basic -> {}); // Basic Auth 
+                .httpBasic(basic -> {}); // Basic Auth
 
         return http.build();
     }

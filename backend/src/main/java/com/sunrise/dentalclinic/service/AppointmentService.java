@@ -76,6 +76,18 @@ public class AppointmentService {
                 .toList();
     }
 
+    @Transactional
+    public AppointmentResponseDTO updateStatus(String appointmentNo, String status) {
+        Appointment appointment = appointmentRepository.findByAppointmentNo(appointmentNo)
+                .orElseThrow(() -> new AppointmentNotFoundException(
+                        "No appointment found with appointment number: " + appointmentNo));
+
+        appointment.setStatus(Appointment.AppointmentStatus.valueOf(status));
+        appointment = appointmentRepository.save(appointment);
+
+        return toResponse(appointment);
+    }
+
     // search returning patient
     private Patient findOrRegisterPatient(AppointmentRequestDTO request) {
         return patientRepository.findByContactNumber(request.getContactNumber())

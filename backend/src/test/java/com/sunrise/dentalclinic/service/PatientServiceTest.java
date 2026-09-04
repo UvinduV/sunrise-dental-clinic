@@ -3,7 +3,9 @@ package com.sunrise.dentalclinic.service;
 import com.sunrise.dentalclinic.dto.request.PatientRequestDTO;
 import com.sunrise.dentalclinic.dto.response.PatientResponseDTO;
 import com.sunrise.dentalclinic.entity.Patient;
+import com.sunrise.dentalclinic.exception.PatientHasAppointmentsException;
 import com.sunrise.dentalclinic.exception.PatientNotFoundException;
+import com.sunrise.dentalclinic.repository.AppointmentRepository;
 import com.sunrise.dentalclinic.repository.PatientRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +27,9 @@ class PatientServiceTest {
 
     @Mock
     private PatientRepository patientRepository;
+
+    @Mock
+    private AppointmentRepository appointmentRepository;
 
     @InjectMocks
     private PatientService patientService;
@@ -97,6 +102,7 @@ class PatientServiceTest {
     @Test
     void delete_existingId_deleted() {
         when(patientRepository.existsById(1L)).thenReturn(true);
+        when(appointmentRepository.existsByPatientId(1L)).thenReturn(false);
 
         patientService.delete(1L);
 
@@ -108,6 +114,49 @@ class PatientServiceTest {
         when(patientRepository.existsById(99L)).thenReturn(false);
 
         assertThatThrownBy(() -> patientService.delete(99L))
+                .isInstanceOf(PatientNotFoundException.class);
+    }
+
+    @Test
+    void delete_hasAppointments_rejected() {
+        when(patientRepository.existsById(1L)).thenReturn(true);
+        when(appointmentRepository.existsByPatientId(1L)).thenReturn(true);
+
+        assertThatThrownBy(() -> patientService.delete(1L))
+                .isInstanceOf(PatientHasAppointmentsException.class);
+    }
+
+    @Test
+    void hasAppointments_noAppointments_returnsFalse() {
+        when(patientRepository.existsById(1L)).thenReturn(true);
+        when(appointmentRepository.existsByPatientId(1L)).thenReturn(false);
+
+        assertThat(patientService.hasAppointments(1L)).isFalse();
+    }
+
+    @Test
+    void hasAppointments_unknownId_rejected() {
+        when(patientRepository.existsById(99L)).thenReturn(false);
+
+        assertThatThrownBy(() -> patientService.hasAppointments(99L))
+                .isInstanceOf(PatientNotFoundException.class);
+    }
+
+    @Test
+    void findByContactNumber_existingNumber_found() {
+        Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
+        when(patientRepository.findByContactNumber("0771234566")).thenReturn(Optional.of(patient));
+
+        PatientResponseDTO response = patientService.findByContactNumber("0771234566");
+
+        assertThat(response.getName()).isEqualTo("Kamal");
+    }
+
+    @Test
+    void findByContactNumber_unknownNumber_rejected() {
+        when(patientRepository.findByContactNumber("0779999999")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> patientService.findByContactNumber("0779999999"))
                 .isInstanceOf(PatientNotFoundException.class);
     }
 }

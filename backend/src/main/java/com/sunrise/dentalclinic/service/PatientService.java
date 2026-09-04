@@ -3,7 +3,9 @@ package com.sunrise.dentalclinic.service;
 import com.sunrise.dentalclinic.dto.request.PatientRequestDTO;
 import com.sunrise.dentalclinic.dto.response.PatientResponseDTO;
 import com.sunrise.dentalclinic.entity.Patient;
+import com.sunrise.dentalclinic.exception.PatientHasAppointmentsException;
 import com.sunrise.dentalclinic.exception.PatientNotFoundException;
+import com.sunrise.dentalclinic.repository.AppointmentRepository;
 import com.sunrise.dentalclinic.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.List;
 public class PatientService {
 
     private final PatientRepository patientRepository;
+    private final AppointmentRepository appointmentRepository;
 
     public PatientResponseDTO create(PatientRequestDTO request) {
         Patient patient = new Patient();
@@ -40,6 +43,14 @@ public class PatientService {
                 .toList();
     }
 
+    public PatientResponseDTO findByContactNumber(String contactNumber) {
+        Patient patient = patientRepository.findByContactNumber(contactNumber)
+                .orElseThrow(() -> new PatientNotFoundException(
+                        "No patient found with contact number: " + contactNumber));
+
+        return toResponse(patient);
+    }
+
     @Transactional
     public PatientResponseDTO update(Long id, PatientRequestDTO request) {
         Patient patient = patientRepository.findById(id)
@@ -57,7 +68,18 @@ public class PatientService {
         if (!patientRepository.existsById(id)) {
             throw new PatientNotFoundException("No patient found with id: " + id);
         }
+        if (appointmentRepository.existsByPatientId(id)) {
+            throw new PatientHasAppointmentsException(
+                    "This patient has appointment(s) and cannot be deleted.");
+        }
         patientRepository.deleteById(id);
+    }
+
+    public boolean hasAppointments(Long id) {
+        if (!patientRepository.existsById(id)) {
+            throw new PatientNotFoundException("No patient found with id: " + id);
+        }
+        return appointmentRepository.existsByPatientId(id);
     }
 
     private PatientResponseDTO toResponse(Patient patient) {

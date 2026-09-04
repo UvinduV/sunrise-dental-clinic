@@ -192,4 +192,30 @@ class AppointmentServiceTest {
 
         assertThat(responses).isEmpty();
     }
+
+    //test status update
+    @Test
+    void updateStatus_existingNo_updated() {
+        Dentist dentist = new Dentist(1L, "Dr. Silva", "Orthodontist", new BigDecimal("500.00"));
+        TreatmentType treatment = new TreatmentType(1L, "Root Canal", new BigDecimal("5000"));
+        Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
+        Appointment appointment = new Appointment(1L, "APT-00001", patient, dentist, treatment,
+                LocalDate.now().minusDays(1), LocalTime.of(10, 30), Appointment.AppointmentStatus.SCHEDULED);
+
+        when(appointmentRepository.findByAppointmentNo("APT-00001")).thenReturn(Optional.of(appointment));
+        when(appointmentRepository.save(any(Appointment.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        AppointmentResponseDTO response = appointmentService.updateStatus("APT-00001", "COMPLETED");
+
+        assertThat(response.getStatus()).isEqualTo("COMPLETED");
+    }
+
+    @Test
+    void updateStatus_unknownNo_rejected() {
+        when(appointmentRepository.findByAppointmentNo("APT-99999")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> appointmentService.updateStatus("APT-99999", "COMPLETED"))
+                .isInstanceOf(AppointmentNotFoundException.class);
+    }
 }
