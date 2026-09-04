@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // JSON REST API
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/help/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/help/**", "/api/health/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(basic -> {}); // Basic Auth 
