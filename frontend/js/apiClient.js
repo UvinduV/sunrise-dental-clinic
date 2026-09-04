@@ -1,4 +1,4 @@
-// Shared API client: every controller (auth, appointment, bill, patient, report, help)
+// Shared API every controller (auth, appointment, bill, patient, report, help)
 
 const API_BASE_URL = 'http://localhost:8081';
 const SESSION_KEY = 'sunriseDentalCredentials';
