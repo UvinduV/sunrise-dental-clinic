@@ -1,6 +1,7 @@
 package com.sunrise.dentalclinic.controller;
 
 import com.sunrise.dentalclinic.dto.request.PatientRequestDTO;
+import com.sunrise.dentalclinic.exception.PatientHasAppointmentsException;
 import com.sunrise.dentalclinic.exception.PatientNotFoundException;
 import com.sunrise.dentalclinic.service.PatientService;
 import jakarta.validation.Valid;
@@ -74,6 +75,23 @@ public class PatientController {
         try {
             patientService.delete(id);
             return ResponseEntity.noContent().build();
+        } catch (PatientNotFoundException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (PatientHasAppointmentsException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //check patient has appointments before delete
+    @GetMapping("/{id}/has-appointments")
+    public ResponseEntity<?> hasAppointments(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(patientService.hasAppointments(id));
         } catch (PatientNotFoundException e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
