@@ -43,7 +43,7 @@ async function loadAppointmentsTable() {
                 <td>${a.treatmentName}</td>
                 <td>${a.date}</td>
                 <td>${a.time}</td>
-                <td><span class="badge text-bg-secondary">${a.status}</span></td>
+                <td><span class="badge ${statusBadgeClass(a.status)}">${a.status}</span></td>
             </tr>
         `).join('');
     } catch (err) {
@@ -59,13 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Register ---
     const registerForm = document.getElementById('registerForm');
-    const registerError = document.getElementById('registerError');
-    const registerSuccess = document.getElementById('registerSuccess');
 
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        registerError.hidden = true;
-        registerSuccess.hidden = true;
 
         const request = {
             patientName: document.getElementById('apPatientName').value.trim(),
@@ -79,24 +75,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const appointment = await ApiClient.post('/api/appointments', request);
-            registerSuccess.textContent = `Appointment ${appointment.appointmentNo} registered successfully.`;
-            registerSuccess.hidden = false;
+            showToast(`Appointment ${appointment.appointmentNo} registered successfully.`, 'success');
             registerForm.reset();
             await loadAppointmentsTable();
         } catch (err) {
-            registerError.textContent = err.message;
-            registerError.hidden = false;
+            showToast(err.message, 'error');
         }
     });
 
     // --- Search ---
     const searchForm = document.getElementById('searchForm');
-    const searchError = document.getElementById('searchError');
     const searchResult = document.getElementById('searchResult');
 
     searchForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        searchError.hidden = true;
         searchResult.hidden = true;
 
         const apptNo = document.getElementById('searchApptNo').value.trim();
@@ -105,15 +97,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const a = await ApiClient.get(`/api/appointments/${encodeURIComponent(apptNo)}`);
             searchResult.innerHTML = `
                 <div class="app-card">
-                    <strong>${a.appointmentNo}</strong> — <span class="badge text-bg-secondary">${a.status}</span>
+                    <strong>${a.appointmentNo}</strong> — <span class="badge ${statusBadgeClass(a.status)}">${a.status}</span>
                     <p class="mb-1 mt-2">${a.patientName} — ${a.contactNumber}</p>
                     <p class="mb-1">${a.address}</p>
                     <p class="mb-0">${a.dentistName} · ${a.treatmentName} · ${a.date} ${a.time}</p>
                 </div>`;
             searchResult.hidden = false;
         } catch (err) {
-            searchError.textContent = err.message;
-            searchError.hidden = false;
+            showToast(err.message, 'error');
         }
     });
 

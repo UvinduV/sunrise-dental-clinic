@@ -25,31 +25,27 @@ function renderBill(bill) {
 document.addEventListener('DOMContentLoaded', () => {
     // --- Generate ---
     const generateForm = document.getElementById('generateBillForm');
-    const generateError = document.getElementById('generateBillError');
 
     generateForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        generateError.hidden = true;
 
         const appointmentNo = document.getElementById('genBillApptNo').value.trim();
 
         try {
             const bill = await ApiClient.post('/api/bills', { appointmentNo });
             renderBill(bill);
+            showToast(`Bill generated for ${appointmentNo}.`, 'success');
             generateForm.reset();
         } catch (err) {
-            generateError.textContent = err.message;
-            generateError.hidden = false;
+            showToast(err.message, 'error');
         }
     });
 
     // --- View by ID ---
     const viewForm = document.getElementById('viewBillForm');
-    const viewError = document.getElementById('viewBillError');
 
     viewForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        viewError.hidden = true;
 
         const id = document.getElementById('viewBillId').value;
 
@@ -57,8 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const bill = await ApiClient.get(`/api/bills/${id}`);
             renderBill(bill);
         } catch (err) {
-            viewError.textContent = err.message;
-            viewError.hidden = false;
+            showToast(err.message, 'error');
         }
     });
 });

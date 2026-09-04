@@ -75,20 +75,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             try {
                 await ApiClient.del(`/api/patients/${id}`);
+                showToast(`Patient #${id} deleted.`, 'success');
                 await loadPatientsSection();
             } catch (err) {
-                alert(err.message);
+                showToast(err.message, 'error');
             }
         }
     });
 
     // Create / Update
     const patientForm = document.getElementById('patientForm');
-    const patientError = document.getElementById('patientError');
 
     patientForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        patientError.hidden = true;
 
         const request = {
             name: document.getElementById('patientName').value.trim(),
@@ -101,14 +100,15 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (editingId) {
                 await ApiClient.put(`/api/patients/${editingId}`, request);
+                showToast('Patient updated successfully.', 'success');
             } else {
                 await ApiClient.post('/api/patients', request);
+                showToast('Patient added successfully.', 'success');
             }
             exitEditMode();
             await loadPatientsSection();
         } catch (err) {
-            patientError.textContent = err.message;
-            patientError.hidden = false;
+            showToast(err.message, 'error');
         }
     });
 });

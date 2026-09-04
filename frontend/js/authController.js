@@ -18,11 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Login ---
     const loginForm = document.getElementById('loginForm');
-    const loginError = document.getElementById('loginError');
 
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        loginError.hidden = true;
 
         const username = document.getElementById('loginUsername').value.trim();
         const password = document.getElementById('loginPassword').value;
@@ -30,25 +28,21 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await ApiClient.post('/api/auth/login', { username, password });
             ApiClient.setCredentials(username, password);
+            showToast(`Welcome back, ${username}!`, 'success');
             refreshNavState();
             showSection('appointments-section');
             loginForm.reset();
             loadAppointmentsSection();
         } catch (err) {
-            loginError.textContent = err.message;
-            loginError.hidden = false;
+            showToast(err.message, 'error');
         }
     });
 
     // --- Signup ---
     const signupForm = document.getElementById('signupForm');
-    const signupError = document.getElementById('signupError');
-    const signupSuccess = document.getElementById('signupSuccess');
 
     signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        signupError.hidden = true;
-        signupSuccess.hidden = true;
 
         const username = document.getElementById('signupUsername').value.trim();
         const password = document.getElementById('signupPassword').value;
@@ -56,15 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const role = document.getElementById('signupRole').value;
 
         if (password !== confirmPassword) {
-            signupError.textContent = 'Passwords do not match.';
-            signupError.hidden = false;
+            showToast('Passwords do not match.', 'error');
             return;
         }
 
         try {
             await ApiClient.post('/api/auth/register', { username, password, role });
-            signupSuccess.textContent = 'Account created — you can log in now.';
-            signupSuccess.hidden = false;
+            showToast('Account created — you can log in now.', 'success');
             signupForm.reset();
             setTimeout(() => {
                 signupCard.hidden = true;
@@ -73,8 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('loginPassword').focus();
             }, 1200);
         } catch (err) {
-            signupError.textContent = err.message;
-            signupError.hidden = false;
+            showToast(err.message, 'error');
         }
     });
 });

@@ -1,12 +1,10 @@
 // Daily Report / Revenue Report
 
 async function loadDailyReport(date) {
-    const errorBox = document.getElementById('dailyReportError');
     const result = document.getElementById('dailyReportResult');
     const countEl = document.getElementById('dailyReportCount');
     const tbody = document.getElementById('dailyReportTableBody');
 
-    errorBox.hidden = true;
     result.hidden = true;
 
     try {
@@ -24,30 +22,26 @@ async function loadDailyReport(date) {
                     <td>${a.dentistName}</td>
                     <td>${a.treatmentName}</td>
                     <td>${a.time}</td>
-                    <td><span class="badge text-bg-secondary">${a.status}</span></td>
+                    <td><span class="badge ${statusBadgeClass(a.status)}">${a.status}</span></td>
                 </tr>
             `).join('');
         }
 
         result.hidden = false;
     } catch (err) {
-        errorBox.textContent = err.message;
-        errorBox.hidden = false;
+        showToast(err.message, 'error');
     }
 }
 
 async function loadRevenueReport(from, to) {
-    const errorBox = document.getElementById('revenueReportError');
     const result = document.getElementById('revenueReportResult');
     const billCountEl = document.getElementById('revenueReportBillCount');
     const totalEl = document.getElementById('revenueReportTotal');
 
-    errorBox.hidden = true;
     result.hidden = true;
 
     if (from > to) {
-        errorBox.textContent = '"From" date cannot be after "To" date.';
-        errorBox.hidden = false;
+        showToast('"From" date cannot be after "To" date.', 'error');
         return;
     }
 
@@ -59,8 +53,7 @@ async function loadRevenueReport(from, to) {
 
         result.hidden = false;
     } catch (err) {
-        errorBox.textContent = err.message;
-        errorBox.hidden = false;
+        showToast(err.message, 'error');
     }
 }
 
