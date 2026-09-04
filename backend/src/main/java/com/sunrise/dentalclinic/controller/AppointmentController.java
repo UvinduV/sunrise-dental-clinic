@@ -1,6 +1,7 @@
 package com.sunrise.dentalclinic.controller;
 
 import com.sunrise.dentalclinic.dto.request.AppointmentRequestDTO;
+import com.sunrise.dentalclinic.dto.request.AppointmentStatusUpdateRequestDTO;
 import com.sunrise.dentalclinic.exception.AppointmentNotFoundException;
 import com.sunrise.dentalclinic.exception.DentistNotFoundException;
 import com.sunrise.dentalclinic.exception.DoubleBookingException;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,6 +62,21 @@ public class AppointmentController {
     public ResponseEntity<?> findAll() {
         try {
             return ResponseEntity.ok(appointmentService.findAll());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //update appointment status
+    @PutMapping("/{appointmentNo}/status")
+    public ResponseEntity<?> updateStatus(@PathVariable String appointmentNo,
+                                           @Valid @RequestBody AppointmentStatusUpdateRequestDTO request) {
+        try {
+            return ResponseEntity.ok(appointmentService.updateStatus(appointmentNo, request.getStatus()));
+        } catch (AppointmentNotFoundException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

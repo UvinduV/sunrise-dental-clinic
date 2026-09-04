@@ -27,6 +27,24 @@ async function loadDentistsAndTreatments() {
     }
 }
 
+//appointment has can status change in after past due date and time
+function isPastDue(appointment) {
+    return new Date(`${appointment.date}T${appointment.time}`) < new Date();
+}
+
+function statusCell(a) {
+    if (a.status !== 'SCHEDULED' || !isPastDue(a)) {
+        return `<span class="badge ${statusBadgeClass(a.status)}">${a.status}</span>`;
+    }
+    return `
+        <select class="form-select form-select-sm status-select" style="width: auto;"
+                data-appointment-no="${a.appointmentNo}">
+            <option value="SCHEDULED" selected>Scheduled</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="CANCELLED">Cancelled</option>
+        </select>`;
+}
+
 async function loadAppointmentsTable() {
     const tbody = document.getElementById('appointmentsTableBody');
     try {
@@ -43,7 +61,7 @@ async function loadAppointmentsTable() {
                 <td>${a.treatmentName}</td>
                 <td>${a.date}</td>
                 <td>${a.time}</td>
-                <td><span class="badge ${statusBadgeClass(a.status)}">${a.status}</span></td>
+                <td class="text-end">${statusCell(a)}</td>
             </tr>
         `).join('');
     } catch (err) {
@@ -112,4 +130,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Manual refresh ---
     document.getElementById('refreshAppointmentsBtn').addEventListener('click', loadAppointmentsTable);
+
+    // --- Status change (past-due scheduled appointments only) ---
+    document.getElementById('appointmentsTableBody').addEventListener('change', async (e) => {
+        const select = e.target.closest('.status-select');
+        if (!select) return;
+
+        const appointmentNo = select.dataset.appointmentNo;
+        const status = select.value;
+
+        try {
+            await ApiClient.put(`/api/appointments/${appointmentNo}/status`, { status });
+            showToast(`${appointmentNo} marked ${status.toLowerCase()}.`, 'success');
+            await loadAppointmentsTable();
+        } catch (err) {
+            showToast(err.message, 'error');
+        }
+    });
 });
