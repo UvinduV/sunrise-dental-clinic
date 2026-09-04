@@ -30,9 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
             ApiClient.setCredentials(username, password);
             showToast(`Welcome back, ${username}!`, 'success');
             refreshNavState();
-            showSection('appointments-section');
+            showSection('dashboard-section');
             loginForm.reset();
-            loadAppointmentsSection();
+            loadDashboardSection();
         } catch (err) {
             showToast(err.message, 'error');
         }

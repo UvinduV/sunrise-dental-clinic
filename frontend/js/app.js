@@ -45,6 +45,8 @@ function refreshNavState() {
     const loggedIn = ApiClient.isLoggedIn();
     document.getElementById('navAuthed').style.display = loggedIn ? '' : 'none';
     document.getElementById('navGuest').style.display = loggedIn ? 'none' : '';
+    // Brand click goes to the Dashboard once logged in, otherwise the public home page.
+    document.getElementById('navBrand').dataset.section = loggedIn ? 'dashboard-section' : 'home-section';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -71,5 +73,17 @@ document.addEventListener('DOMContentLoaded', () => {
         refreshNavState();
         showSection('home-section');
         showToast('You have been logged out.', 'success');
+    });
+
+    // Show/hide password toggle button
+    document.querySelectorAll('.toggle-password').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const input = document.getElementById(btn.dataset.target);
+            const icon = btn.querySelector('i');
+            const showing = input.type === 'text';
+            input.type = showing ? 'password' : 'text';
+            icon.classList.toggle('fa-eye', showing);
+            icon.classList.toggle('fa-eye-slash', !showing);
+        });
     });
 });

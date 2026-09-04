@@ -14,12 +14,13 @@
 
 <nav class="navbar navbar-expand-md fixed-top" id="mainNav">
     <div class="container">
-        <a class="navbar-brand" href="#" data-section="home-section"><i class="fa-solid fa-tooth"></i> Sunrise Dental</a>
+        <a class="navbar-brand" id="navBrand" href="#" data-section="home-section"><i class="fa-solid fa-tooth"></i> Sunrise Dental</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navLinks">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navLinks">
             <ul class="navbar-nav ms-auto" id="navAuthed">
+                <li class="nav-item"><a class="nav-link" href="#" data-section="dashboard-section">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link" href="#" data-section="appointments-section">Appointments</a></li>
                 <li class="nav-item"><a class="nav-link" href="#" data-section="bills-section">Bills</a></li>
                 <li class="nav-item"><a class="nav-link" href="#" data-section="patients-section">Patients</a></li>
@@ -58,7 +59,12 @@
                         </div>
                         <div class="mb-3">
                             <label for="loginPassword" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="loginPassword" required>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="loginPassword" required>
+                                <button type="button" class="btn btn-outline-secondary toggle-password" data-target="loginPassword" tabindex="-1">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Login</button>
                     </form>
@@ -77,11 +83,21 @@
                         </div>
                         <div class="mb-3">
                             <label for="signupPassword" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="signupPassword" minlength="4" required>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="signupPassword" minlength="4" required>
+                                <button type="button" class="btn btn-outline-secondary toggle-password" data-target="signupPassword" tabindex="-1">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control" id="signupConfirmPassword" minlength="4" required>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="signupConfirmPassword" minlength="4" required>
+                                <button type="button" class="btn btn-outline-secondary toggle-password" data-target="signupConfirmPassword" tabindex="-1">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="signupRole" class="form-label">Role</label>
@@ -97,6 +113,44 @@
                     </p>
                 </div>
 
+            </div>
+        </div>
+    </section>
+
+    <!-- dashboard-section -->
+    <section id="dashboard-section" class="app-section" hidden>
+        <div class="dashboard-banner mb-4">
+            <h2 class="mb-1">Dashboard</h2>
+            <p class="mb-0">Here's what's happening at the clinic today.</p>
+        </div>
+        <div class="row g-3 mb-2">
+            <div class="col-md-6 col-xl-3">
+                <div class="app-card stat-card">
+                    <i class="fa-solid fa-users stat-icon"></i>
+                    <h6 class="stat-label">Total Patients</h6>
+                    <h2 class="stat-value" id="statTotalPatients">–</h2>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+                <div class="app-card stat-card">
+                    <i class="fa-solid fa-calendar-check stat-icon"></i>
+                    <h6 class="stat-label">Total Appointments</h6>
+                    <h2 class="stat-value" id="statTotalAppointments">–</h2>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+                <div class="app-card stat-card">
+                    <i class="fa-solid fa-calendar-day stat-icon"></i>
+                    <h6 class="stat-label">Today's Appointments</h6>
+                    <h2 class="stat-value" id="statTodayAppointments">–</h2>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+                <div class="app-card stat-card">
+                    <i class="fa-solid fa-sack-dollar stat-icon"></i>
+                    <h6 class="stat-label">Total Revenue</h6>
+                    <h2 class="stat-value">Rs. <span id="statTotalRevenue">–</span></h2>
+                </div>
             </div>
         </div>
     </section>
@@ -363,6 +417,7 @@
 <script src="js/apiClient.js"></script>
 <script src="js/app.js"></script>
 <script src="js/authController.js"></script>
+<script src="js/dashboardController.js"></script>
 <script src="js/appointmentController.js"></script>
 <script src="js/billController.js"></script>
 <script src="js/patientController.js"></script>
