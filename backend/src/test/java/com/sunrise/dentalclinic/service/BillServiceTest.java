@@ -7,6 +7,7 @@ import com.sunrise.dentalclinic.entity.Dentist;
 import com.sunrise.dentalclinic.entity.Patient;
 import com.sunrise.dentalclinic.entity.TreatmentType;
 import com.sunrise.dentalclinic.exception.AppointmentNotFoundException;
+import com.sunrise.dentalclinic.exception.BillAlreadyExistsException;
 import com.sunrise.dentalclinic.exception.BillNotFoundException;
 import com.sunrise.dentalclinic.repository.AppointmentRepository;
 import com.sunrise.dentalclinic.repository.BillRepository;
@@ -60,6 +61,7 @@ class BillServiceTest {
         Bill bill = new Bill(1L, appointment, total, LocalDate.now());
 
         when(appointmentRepository.findByAppointmentNo("APT-00001")).thenReturn(Optional.of(appointment));
+        when(billRepository.existsByAppointmentId(1L)).thenReturn(false);
         when(feeCalculationStrategy.calculateFee(appointment.getTreatment(), appointment.getDentist())).thenReturn(total);
         when(billFactory.createBill(appointment, total)).thenReturn(bill);
         when(billRepository.save(bill)).thenReturn(bill);
@@ -79,6 +81,17 @@ class BillServiceTest {
 
         assertThatThrownBy(() -> billService.generateBill("APT-99999"))
                 .isInstanceOf(AppointmentNotFoundException.class);
+    }
+
+    @Test
+    void generateBill_alreadyBilled_rejected() {
+        Appointment appointment = sampleAppointment();
+
+        when(appointmentRepository.findByAppointmentNo("APT-00001")).thenReturn(Optional.of(appointment));
+        when(billRepository.existsByAppointmentId(1L)).thenReturn(true);
+
+        assertThatThrownBy(() -> billService.generateBill("APT-00001"))
+                .isInstanceOf(BillAlreadyExistsException.class);
     }
 
     @Test

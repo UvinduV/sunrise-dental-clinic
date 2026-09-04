@@ -4,6 +4,7 @@ import com.sunrise.dentalclinic.dto.response.BillResponseDTO;
 import com.sunrise.dentalclinic.entity.Appointment;
 import com.sunrise.dentalclinic.entity.Bill;
 import com.sunrise.dentalclinic.exception.AppointmentNotFoundException;
+import com.sunrise.dentalclinic.exception.BillAlreadyExistsException;
 import com.sunrise.dentalclinic.exception.BillNotFoundException;
 import com.sunrise.dentalclinic.repository.AppointmentRepository;
 import com.sunrise.dentalclinic.repository.BillRepository;
@@ -29,6 +30,11 @@ public class BillService {
         Appointment appointment = appointmentRepository.findByAppointmentNo(appointmentNo)
                 .orElseThrow(() -> new AppointmentNotFoundException(
                         "No appointment found with appointment number: " + appointmentNo));
+
+        if (billRepository.existsByAppointmentId(appointment.getId())) {
+            throw new BillAlreadyExistsException(
+                    "A bill has already been generated for appointment: " + appointmentNo);
+        }
 
         BigDecimal totalAmount = feeCalculationStrategy.calculateFee(appointment.getTreatment(), appointment.getDentist());
 

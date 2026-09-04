@@ -2,6 +2,7 @@ package com.sunrise.dentalclinic.controller;
 
 import com.sunrise.dentalclinic.dto.request.BillRequestDTO;
 import com.sunrise.dentalclinic.exception.AppointmentNotFoundException;
+import com.sunrise.dentalclinic.exception.BillAlreadyExistsException;
 import com.sunrise.dentalclinic.exception.BillNotFoundException;
 import com.sunrise.dentalclinic.service.BillService;
 import jakarta.validation.Valid;
@@ -30,6 +31,9 @@ public class BillController {
         } catch (AppointmentNotFoundException e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (BillAlreadyExistsException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

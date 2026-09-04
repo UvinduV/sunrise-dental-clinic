@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Long> {
     List<Bill> findByIssuedDateBetween(LocalDate from, LocalDate to);
+
+    boolean existsByAppointmentId(Long appointmentId);
 }
