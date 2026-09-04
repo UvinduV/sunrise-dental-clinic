@@ -278,6 +278,65 @@
     </section>
 
     <section id="reports-section" class="app-section" hidden>
+        <h2 class="mb-4">Reports</h2>
+
+        <!-- daily report  -->
+        <div class="app-card mb-4">
+            <h5 class="mb-3">Daily Appointments Report</h5>
+            <div id="dailyReportError" class="alert alert-danger" hidden></div>
+            <form id="dailyReportForm" class="row g-2 align-items-end mb-3">
+                <div class="col-md-4">
+                    <label for="dailyReportDate" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="dailyReportDate" required>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary">Generate Report</button>
+                </div>
+            </form>
+
+            <div id="dailyReportResult" hidden>
+                <p class="mb-2"><strong>Total Appointments:</strong> <span id="dailyReportCount">0</span></p>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Patient</th>
+                            <th>Dentist</th>
+                            <th>Treatment</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody id="dailyReportTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue report -->
+        <div class="app-card">
+            <h5 class="mb-3">Revenue Report</h5>
+            <div id="revenueReportError" class="alert alert-danger" hidden></div>
+            <form id="revenueReportForm" class="row g-2 align-items-end mb-3">
+                <div class="col-md-4">
+                    <label for="revenueFromDate" class="form-label">From</label>
+                    <input type="date" class="form-control" id="revenueFromDate" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="revenueToDate" class="form-label">To</label>
+                    <input type="date" class="form-control" id="revenueToDate" required>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary">Generate Report</button>
+                </div>
+            </form>
+
+            <div id="revenueReportResult" hidden>
+                <p class="mb-1"><strong>Total Bills:</strong> <span id="revenueReportBillCount">0</span></p>
+                <p class="mb-0"><strong>Total Revenue:</strong> Rs. <span id="revenueReportTotal">0.00</span></p>
+            </div>
+        </div>
     </section>
 
     <section id="help-section" class="app-section" hidden>
@@ -292,5 +351,6 @@
 <script src="js/appointmentController.js"></script>
 <script src="js/billController.js"></script>
 <script src="js/patientController.js"></script>
+<script src="js/reportController.js"></script>
 </body>
 </html>
