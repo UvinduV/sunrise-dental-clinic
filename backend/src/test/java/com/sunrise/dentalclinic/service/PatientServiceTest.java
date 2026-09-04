@@ -141,4 +141,22 @@ class PatientServiceTest {
         assertThatThrownBy(() -> patientService.hasAppointments(99L))
                 .isInstanceOf(PatientNotFoundException.class);
     }
+
+    @Test
+    void findByContactNumber_existingNumber_found() {
+        Patient patient = new Patient(1L, "Kamal", "123 Main St, Colombo", "0771234566");
+        when(patientRepository.findByContactNumber("0771234566")).thenReturn(Optional.of(patient));
+
+        PatientResponseDTO response = patientService.findByContactNumber("0771234566");
+
+        assertThat(response.getName()).isEqualTo("Kamal");
+    }
+
+    @Test
+    void findByContactNumber_unknownNumber_rejected() {
+        when(patientRepository.findByContactNumber("0779999999")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> patientService.findByContactNumber("0779999999"))
+                .isInstanceOf(PatientNotFoundException.class);
+    }
 }

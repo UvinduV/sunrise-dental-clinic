@@ -43,6 +43,14 @@ public class PatientService {
                 .toList();
     }
 
+    public PatientResponseDTO findByContactNumber(String contactNumber) {
+        Patient patient = patientRepository.findByContactNumber(contactNumber)
+                .orElseThrow(() -> new PatientNotFoundException(
+                        "No patient found with contact number: " + contactNumber));
+
+        return toResponse(patient);
+    }
+
     @Transactional
     public PatientResponseDTO update(Long id, PatientRequestDTO request) {
         Patient patient = patientRepository.findById(id)

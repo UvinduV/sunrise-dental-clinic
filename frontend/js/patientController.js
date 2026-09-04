@@ -37,7 +37,6 @@ function enterEditMode(id, name, address, contact) {
     document.getElementById('patientContactNumber').value = contact;
     document.getElementById('patientFormTitle').textContent = `Edit Patient #${id}`;
     document.getElementById('patientSubmitBtn').textContent = 'Update Patient';
-    document.getElementById('patientCancelEdit').hidden = false;
 }
 
 function exitEditMode() {
@@ -45,7 +44,6 @@ function exitEditMode() {
     document.getElementById('patientEditingId').value = '';
     document.getElementById('patientFormTitle').textContent = 'Add Patient';
     document.getElementById('patientSubmitBtn').textContent = 'Add Patient';
-    document.getElementById('patientCancelEdit').hidden = true;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -54,10 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('refreshPatientsBtn').addEventListener('click', loadPatientsSection);
 
-    document.getElementById('patientCancelEdit').addEventListener('click', (e) => {
-        e.preventDefault();
-        exitEditMode();
-    });
+    // Add / Edit modal
+    const patientFormModal = new bootstrap.Modal(document.getElementById('patientFormModal'));
+    document.getElementById('patientFormModal').addEventListener('hidden.bs.modal', exitEditMode);
 
     // Edit / Delete buttons
     const deleteModal = new bootstrap.Modal(document.getElementById('patientDeleteConfirmModal'));
@@ -68,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const editBtn = e.target.closest('.patient-edit-btn');
         if (editBtn) {
             enterEditMode(editBtn.dataset.id, editBtn.dataset.name, editBtn.dataset.address, editBtn.dataset.contact);
+            patientFormModal.show();
             return;
         }
 
@@ -106,6 +104,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- Search ---
+    const searchForm = document.getElementById('patientSearchForm');
+    const searchResult = document.getElementById('patientSearchResult');
+
+    searchForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        searchResult.hidden = true;
+
+        const contact = document.getElementById('patientSearchContact').value.trim();
+
+        try {
+            const p = await ApiClient.get(`/api/patients/search?contactNumber=${encodeURIComponent(contact)}`);
+            searchResult.innerHTML = `
+                <div class="app-card">
+                    <strong>${p.name}</strong>
+                    <p class="mb-1 mt-2">${p.contactNumber}</p>
+                    <p class="mb-0">${p.address}</p>
+                </div>`;
+            searchResult.hidden = false;
+        } catch (err) {
+            showToast(err.message, 'error');
+        }
+    });
+
     // Create / Update
     const patientForm = document.getElementById('patientForm');
 
@@ -133,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await ApiClient.post('/api/patients', request);
                 showToast('Patient added successfully.', 'success');
             }
-            exitEditMode();
+            patientFormModal.hide();
             await loadPatientsSection();
         } catch (err) {
             showToast(err.message, 'error');

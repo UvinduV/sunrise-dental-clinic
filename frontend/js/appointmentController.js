@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Register ---
     const registerForm = document.getElementById('registerForm');
+    const newAppointmentModal = new bootstrap.Modal(document.getElementById('newAppointmentModal'));
 
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -77,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const appointment = await ApiClient.post('/api/appointments', request);
             showToast(`Appointment ${appointment.appointmentNo} registered successfully.`, 'success');
             registerForm.reset();
+            newAppointmentModal.hide();
             await loadAppointmentsTable();
         } catch (err) {
             showToast(err.message, 'error');

@@ -157,47 +157,11 @@
 
     <!-- appointments-section -->
     <section id="appointments-section" class="app-section" hidden>
-        <h2 class="mb-4">Appointments</h2>
-
-        <div class="app-card mb-4">
-            <h5 class="mb-3">Register New Appointment</h5>
-            <form id="registerForm" class="row g-3">
-                <div class="col-md-6">
-                    <label for="apPatientName" class="form-label">Patient Name</label>
-                    <input type="text" class="form-control" id="apPatientName" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="apContactNumber" class="form-label">Contact Number</label>
-                    <input type="text" class="form-control" id="apContactNumber" placeholder="eg:0771234567" required>
-                </div>
-                <div class="col-12">
-                    <label for="apAddress" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="apAddress" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="apDentist" class="form-label">Dentist</label>
-                    <select class="form-select" id="apDentist" required>
-                        <option value="" disabled selected>Loading dentists…</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="apTreatment" class="form-label">Treatment</label>
-                    <select class="form-select" id="apTreatment" required>
-                        <option value="" disabled selected>Loading treatments…</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="apDate" class="form-label">Date</label>
-                    <input type="date" class="form-control" id="apDate" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="apTime" class="form-label">Time</label>
-                    <input type="time" class="form-control" id="apTime" required>
-                </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary">Register Appointment</button>
-                </div>
-            </form>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Appointments</h2>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newAppointmentModal">
+                <i class="fa-solid fa-plus"></i> New Appointment
+            </button>
         </div>
 
         <div class="app-card mb-4">
@@ -275,30 +239,25 @@
 
     <!-- Patients section -->
     <section id="patients-section" class="app-section" hidden>
-        <h2 class="mb-4">Patients</h2>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Patients</h2>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#patientFormModal">
+                <i class="fa-solid fa-plus"></i> Add Patient
+            </button>
+        </div>
 
         <div class="app-card mb-4">
-            <h5 class="mb-3" id="patientFormTitle">Add Patient</h5>
-            <form id="patientForm" class="row g-3">
-                <input type="hidden" id="patientEditingId">
-                <div class="col-md-4">
-                    <label for="patientName" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="patientName" required>
+            <h5 class="mb-3">Search Patient</h5>
+            <form id="patientSearchForm" class="row g-2 align-items-end mb-3">
+                <div class="col-md-6">
+                    <label for="patientSearchContact" class="form-label">Contact Number</label>
+                    <input type="text" class="form-control" id="patientSearchContact" placeholder="0771234567" required>
                 </div>
-                <div class="col-md-4">
-                    <label for="patientContactNumber" class="form-label">Contact Number</label>
-                    <input type="text" class="form-control" id="patientContactNumber" placeholder="0771234567"
-                           pattern="0[0-9]{9}" title="Contact number must be 10 digits (e.g. 0771234567)" required>
-                </div>
-                <div class="col-md-4">
-                    <label for="patientAddress" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="patientAddress" required>
-                </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary" id="patientSubmitBtn">Add Patient</button>
-                    <a href="#" id="patientCancelEdit" class="ms-3" hidden>Cancel</a>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-outline-primary">Search</button>
                 </div>
             </form>
+            <div id="patientSearchResult" hidden></div>
         </div>
 
         <div class="app-card">
@@ -396,6 +355,91 @@
 </main>
 
 <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer" style="z-index: 1080;"></div>
+
+<!-- New appointment -->
+<div class="modal fade" id="newAppointmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Register New Appointment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm" class="row g-3">
+                    <div class="col-md-6">
+                        <label for="apPatientName" class="form-label">Patient Name</label>
+                        <input type="text" class="form-control" id="apPatientName" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="apContactNumber" class="form-label">Contact Number</label>
+                        <input type="text" class="form-control" id="apContactNumber" placeholder="eg:0771234567" required>
+                    </div>
+                    <div class="col-12">
+                        <label for="apAddress" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="apAddress" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="apDentist" class="form-label">Dentist</label>
+                        <select class="form-select" id="apDentist" required>
+                            <option value="" disabled selected>Loading dentists…</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="apTreatment" class="form-label">Treatment</label>
+                        <select class="form-select" id="apTreatment" required>
+                            <option value="" disabled selected>Loading treatments…</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="apDate" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="apDate" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="apTime" class="form-label">Time</label>
+                        <input type="time" class="form-control" id="apTime" required>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Register Appointment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add / Edit patient -->
+<div class="modal fade" id="patientFormModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="patientFormTitle">Add Patient</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="patientForm" class="row g-3">
+                    <input type="hidden" id="patientEditingId">
+                    <div class="col-md-6">
+                        <label for="patientName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="patientName" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="patientContactNumber" class="form-label">Contact Number</label>
+                        <input type="text" class="form-control" id="patientContactNumber" placeholder="0771234567"
+                               pattern="0[0-9]{9}" title="Contact number must be 10 digits (e.g. 0771234567)" required>
+                    </div>
+                    <div class="col-12">
+                        <label for="patientAddress" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="patientAddress" required>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary" id="patientSubmitBtn">Add Patient</button>
+                        <button type="button" class="btn btn-outline-secondary ms-2" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Logout confirmation -->
 <div class="modal fade" id="logoutConfirmModal" tabindex="-1" aria-hidden="true">

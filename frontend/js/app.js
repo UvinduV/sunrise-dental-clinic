@@ -20,7 +20,7 @@ function statusBadgeClass(status) {
     }
 }
 
-// Shows a popup notification. type: 'success' | 'error'
+// Shows a popup notification
 function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
 
