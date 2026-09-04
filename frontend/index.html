@@ -225,7 +225,56 @@
         <div id="billReceipt" hidden></div>
     </section>
 
+    <!-- Patients section -->
     <section id="patients-section" class="app-section" hidden>
+        <h2 class="mb-4">Patients</h2>
+
+        <div class="app-card mb-4">
+            <h5 class="mb-3" id="patientFormTitle">Add Patient</h5>
+            <div id="patientError" class="alert alert-danger" hidden></div>
+            <form id="patientForm" class="row g-3">
+                <input type="hidden" id="patientEditingId">
+                <div class="col-md-4">
+                    <label for="patientName" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="patientName" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="patientContactNumber" class="form-label">Contact Number</label>
+                    <input type="text" class="form-control" id="patientContactNumber" placeholder="0771234567" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="patientAddress" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="patientAddress" required>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary" id="patientSubmitBtn">Add Patient</button>
+                    <a href="#" id="patientCancelEdit" class="ms-3" hidden>Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="app-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">All Patients</h5>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="refreshPatientsBtn">Refresh</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Contact Number</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="patientsTableBody">
+                    <tr><td colspan="5" class="text-center text-muted">Loading…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </section>
 
     <section id="reports-section" class="app-section" hidden>
@@ -242,5 +291,6 @@
 <script src="js/authController.js"></script>
 <script src="js/appointmentController.js"></script>
 <script src="js/billController.js"></script>
+<script src="js/patientController.js"></script>
 </body>
 </html>
