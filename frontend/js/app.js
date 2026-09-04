@@ -45,7 +45,6 @@ function refreshNavState() {
     const loggedIn = ApiClient.isLoggedIn();
     document.getElementById('navAuthed').style.display = loggedIn ? '' : 'none';
     document.getElementById('navGuest').style.display = loggedIn ? 'none' : '';
-    // Brand click goes to the Dashboard once logged in, otherwise the public home page.
     document.getElementById('navBrand').dataset.section = loggedIn ? 'dashboard-section' : 'home-section';
 }
 

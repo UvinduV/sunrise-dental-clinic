@@ -59,7 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
         exitEditMode();
     });
 
-    // Edit / Delete buttons 
+    // Edit / Delete buttons
+    const deleteModal = new bootstrap.Modal(document.getElementById('patientDeleteConfirmModal'));
+    const deleteConfirmText = document.getElementById('patientDeleteConfirmText');
+    let patientIdPendingDelete = null;
+
     document.getElementById('patientsTableBody').addEventListener('click', async (e) => {
         const editBtn = e.target.closest('.patient-edit-btn');
         if (editBtn) {
@@ -70,16 +74,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const deleteBtn = e.target.closest('.patient-delete-btn');
         if (deleteBtn) {
             const id = deleteBtn.dataset.id;
-            if (!confirm(`Delete patient #${id}? This cannot be undone.`)) {
-                return;
-            }
+            const name = deleteBtn.dataset.name;
+
             try {
-                await ApiClient.del(`/api/patients/${id}`);
-                showToast(`Patient #${id} deleted.`, 'success');
-                await loadPatientsSection();
+                const hasAppointments = await ApiClient.get(`/api/patients/${id}/has-appointments`);
+                if (hasAppointments) {
+                    showToast(`${name} has appointment(s) and cannot be deleted.`, 'error');
+                    return;
+                }
             } catch (err) {
                 showToast(err.message, 'error');
+                return;
             }
+
+            patientIdPendingDelete = id;
+            deleteConfirmText.textContent = `Delete ${name}? This cannot be undone.`;
+            deleteModal.show();
+        }
+    });
+
+    document.getElementById('confirmPatientDeleteBtn').addEventListener('click', async () => {
+        const id = patientIdPendingDelete;
+        deleteModal.hide();
+
+        try {
+            await ApiClient.del(`/api/patients/${id}`);
+            showToast(`Patient #${id} deleted.`, 'success');
+            await loadPatientsSection();
+        } catch (err) {
+            showToast(err.message, 'error');
         }
     });
 
@@ -94,6 +117,11 @@ document.addEventListener('DOMContentLoaded', () => {
             address: document.getElementById('patientAddress').value.trim(),
             contactNumber: document.getElementById('patientContactNumber').value.trim()
         };
+
+        if (!/^0[0-9]{9}$/.test(request.contactNumber)) {
+            showToast('Contact number must be 10 digits (eg: 0771234567)', 'error');
+            return;
+        }
 
         const editingId = document.getElementById('patientEditingId').value;
 
